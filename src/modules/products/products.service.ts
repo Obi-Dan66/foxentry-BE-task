@@ -55,15 +55,31 @@ export class ProductsService {
   ): Promise<Product> {
     const product = await this.findOne(id);
 
+    console.log('Current product:', product);
+    console.log('Update DTO:', updateProductDto);
+
     if (updateProductDto.price && updateProductDto.price !== product.price) {
+      console.log('Creating price history record');
+      console.log('Old price:', product.price);
+      console.log('New price:', updateProductDto.price);
+
+      // First update the product
+      Object.assign(product, updateProductDto);
+      const updatedProduct = await this.productRepository.save(product);
+
+      // Then create price history with the updated product
       const priceHistory = this.priceHistoryRepository.create({
-        product,
+        productId: updatedProduct.id,
+        product: updatedProduct,
         oldPrice: product.price,
         newPrice: updateProductDto.price,
       });
       await this.priceHistoryRepository.save(priceHistory);
+
+      return updatedProduct;
     }
 
+    // If no price change, just update the product
     Object.assign(product, updateProductDto);
     return await this.productRepository.save(product);
   }
@@ -75,11 +91,17 @@ export class ProductsService {
   }
 
   async getPriceHistory(id: number): Promise<PriceHistory[]> {
+    console.log('Getting price history for product:', id);
+
     await this.findOne(id);
 
-    return await this.priceHistoryRepository.find({
-      where: { product: { id } },
+    const history = await this.priceHistoryRepository.find({
+      where: { productId: id },
       order: { changedAt: 'DESC' },
+      relations: ['product'],
     });
+
+    console.log('Found history:', history);
+    return history;
   }
 }

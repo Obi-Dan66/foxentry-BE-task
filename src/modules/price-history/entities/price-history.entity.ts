@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 
@@ -13,7 +14,11 @@ export class PriceHistory {
   id: number;
 
   @ManyToOne(() => Product, (product) => product.priceHistory)
+  @JoinColumn({ name: 'productId' })
   product: Product;
+
+  @Column()
+  productId: number;
 
   @Column('decimal', { precision: 10, scale: 2 })
   oldPrice: number;
