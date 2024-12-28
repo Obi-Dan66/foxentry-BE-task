@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { PriceHistory } from './entities/price-history.entity';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { QueryProductDto } from './dto/query-product.dto';
+import { CreateProductDto } from './DTO/create-product.dto';
+import { UpdateProductDto } from './DTO/update-product.dto';
+import { QueryProductDto } from './DTO/query-product.dto';
 
 @Injectable()
 export class ProductsService {

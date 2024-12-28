@@ -8,6 +8,9 @@ export default registerAs('database', () => ({
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'fox_shop',
   entities: ['dist/**/*.entity{.ts,.js}'],
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: true,
   autoLoadEntities: true,
+  retryAttempts: 10,
+  retryDelay: 3000,
+  keepConnectionAlive: true,
 }));

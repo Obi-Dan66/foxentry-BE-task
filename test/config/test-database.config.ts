@@ -4,10 +4,10 @@ import { PriceHistory } from '../../src/modules/products/entities/price-history.
 
 export const testDatabaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: 'localhost',
+  host: 'postgres',
   port: 5432,
   username: 'postgres',
-  password: 'apupu',
+  password: 'postgres',
   database: 'fox_shop_test',
   entities: [Product, PriceHistory],
   synchronize: true,

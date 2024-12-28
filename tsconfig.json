@@ -15,8 +15,10 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
-    "allowJs": true
+    "paths": {
+      "*": ["node_modules/*", "src/*"]
+    }
   }
 }
