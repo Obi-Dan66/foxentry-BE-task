@@ -5,7 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
-import { Product } from '../../products/entities/products.entity';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity()
 export class PriceHistory {
