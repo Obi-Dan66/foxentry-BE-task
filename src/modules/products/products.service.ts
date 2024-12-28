@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, Between } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { PriceHistory } from '../price-history/entities/price-history.entity';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,20 +22,37 @@ export class ProductsService {
   }
 
   async findAll(query: QueryProductDto): Promise<Product[]> {
-    const where: any = {};
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
 
+    // Search by name (case insensitive)
     if (query.name) {
-      where.name = Like(`%${query.name}%`);
+      queryBuilder.andWhere('LOWER(product.name) LIKE LOWER(:name)', {
+        name: `%${query.name}%`,
+      });
     }
 
-    if (query.minStock !== undefined || query.maxStock !== undefined) {
-      where.stockQuantity = Between(
-        query.minStock || 0,
-        query.maxStock || Number.MAX_SAFE_INTEGER,
-      );
+    // Filter by stock quantity
+    if (query.minStock !== undefined) {
+      queryBuilder.andWhere('product.stockQuantity >= :minStock', {
+        minStock: query.minStock,
+      });
     }
 
-    return await this.productRepository.find({ where });
+    if (query.maxStock !== undefined) {
+      queryBuilder.andWhere('product.stockQuantity <= :maxStock', {
+        maxStock: query.maxStock,
+      });
+    }
+
+    // Filter active/inactive products
+    if (!query.includeInactive) {
+      queryBuilder.andWhere('product.isActive = :isActive', { isActive: true });
+    }
+
+    // Order by name
+    queryBuilder.orderBy('product.name', 'ASC');
+
+    return await queryBuilder.getMany();
   }
 
   async findOne(id: number): Promise<Product> {
@@ -84,10 +101,10 @@ export class ProductsService {
     return await this.productRepository.save(product);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<Product> {
     const product = await this.findOne(id);
     product.isActive = false;
-    await this.productRepository.save(product);
+    return await this.productRepository.save(product);
   }
 
   async getPriceHistory(id: number): Promise<PriceHistory[]> {

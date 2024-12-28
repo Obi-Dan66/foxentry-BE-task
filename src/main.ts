@@ -7,8 +7,28 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Fox Shop API')
-    .setDescription('The Fox Shop API description')
+    .setDescription(
+      `
+      API for managing Fox Shop products.
+      
+      Features:
+      - Product management (CRUD operations)
+      - Price history tracking
+      - Stock management
+      - Product search and filtering
+      
+      ## Query Parameters
+      - Use 'name' for case-insensitive product search
+      - Use 'minStock' and 'maxStock' to filter by inventory levels
+      - Use 'includeInactive=true' to show deactivated products
+      
+      ## Price History
+      Price changes are automatically tracked and can be retrieved per product
+    `,
+    )
     .setVersion('1.0')
+    .addTag('Products', 'Product management endpoints')
+    .addServer('http://localhost:3000', 'Local development')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
