@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PriceHistory } from '../../price-history/entities/price-history.entity';
+import { PriceHistory } from './price-history.entity';
 
 @Entity()
 export class Product {
