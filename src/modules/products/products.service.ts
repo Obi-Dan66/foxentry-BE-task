@@ -71,34 +71,31 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
     const product = await this.findOne(id);
-
     console.log('Current product:', product);
     console.log('Update DTO:', updateProductDto);
 
-    if (updateProductDto.price && updateProductDto.price !== product.price) {
+    const oldPrice = product.price;
+
+    // Update the product
+    Object.assign(product, updateProductDto);
+    const updatedProduct = await this.productRepository.save(product);
+
+    // Create price history if price changed
+    if (updateProductDto.price && updateProductDto.price !== oldPrice) {
       console.log('Creating price history record');
-      console.log('Old price:', product.price);
+      console.log('Old price:', oldPrice);
       console.log('New price:', updateProductDto.price);
 
-      // First update the product
-      Object.assign(product, updateProductDto);
-      const updatedProduct = await this.productRepository.save(product);
-
-      // Then create price history with the updated product
       const priceHistory = this.priceHistoryRepository.create({
-        productId: updatedProduct.id,
-        product: updatedProduct,
-        oldPrice: product.price,
+        product,
+        oldPrice,
         newPrice: updateProductDto.price,
       });
-      await this.priceHistoryRepository.save(priceHistory);
 
-      return updatedProduct;
+      await this.priceHistoryRepository.save(priceHistory);
     }
 
-    // If no price change, just update the product
-    Object.assign(product, updateProductDto);
-    return await this.productRepository.save(product);
+    return updatedProduct;
   }
 
   async remove(id: number): Promise<Product> {
