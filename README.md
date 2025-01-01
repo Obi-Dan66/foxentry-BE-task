@@ -1,7 +1,204 @@
-# foxentry-BE-task
-Backend task created using Nest.js
+# Fox Shop API
 
-Project created with nest new
+A NestJS-based REST API for managing product inventory with price history tracking.
+
+## Project Creation and Structure
+
+This project was created using:
+```bash
+nest new {project-name}
+```
+
+### Technology Stack
+- **Framework**: NestJS
+- **Database**: PostgreSQL
+- **ORM**: TypeORM
+- **Documentation**: Swagger/OpenAPI
+- **Testing**: Jest with SuperTest
+
+### Project Design Considerations
+- Implemented price history tracking for product price changes
+- Used soft delete pattern for product deactivation
+- Implemented flexible product filtering (name search, stock levels)
+- Database schema auto-synchronization for development
+- Separate test database configuration
+
+## Running the Project
+
+### Using Docker
+```bash
+# Build and start all services
+docker-compose up --build
+
+# Stop all services
+docker-compose down -v
+```
+
+### Running Locally
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Make sure PostgreSQL is running and accessible with credentials from `.env`
+
+3. Start the application:
+```bash
+# Development mode with auto-reload
+npm run start:dev
+```
+
+The API will be available at:
+- Swagger Documentation: `http://localhost:3000/api`
+
+### Running tests
+```bash
+# Run e2e tests
+docker-compose exec api npm run test:e2e
+```
+
+## Environment Setup
+
+1. Copy `.env.example` to `.env`:
+```bash
+DB_HOST=postgres
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=fox_shop
+PORT=3000
+```
+
+2. Docker setup:
+```bash
+# Build and start services
+docker-compose up --build
+
+# Stop services
+docker-compose down -v
+```
+
+## API Documentation
+
+Access Swagger documentation at: `http://localhost:3000/api`
+
+### Test Endpoints (PowerShell)
+
+1. Create Product:
+```powershell
+$body = @{
+    name = "Test Product"
+    price = 9.99
+    stockQuantity = 100
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:3000/products" -Method Post -Body $body -ContentType "application/json"
+```
+
+2. Get All Products:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000/products" -Method Get
+```
+
+3. Get Product by ID:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000/products/{id}" -Method Get
+```
+
+4. Update Product:
+```powershell
+$body = @{
+    price = 19.99
+    stockQuantity = 50
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:3000/products/{id}" -Method Patch -Body $body -ContentType "application/json"
+```
+
+5. Get Price History:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000/products/{id}/price-history" -Method Get
+```
+
+6. Deactivate Product:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3000/products/{id}" -Method Delete
+```
+
+### Test Endpoints (Windows Command Prompt with cURL)
+
+1. Create Product:
+```cmd
+curl -X POST -H "Content-Type: application/json" -d "{\"name\":\"Test Product\",\"price\":9.99,\"stockQuantity\":100}" http://localhost:3000/products
+```
+
+2. Get All Products:
+```cmd
+curl http://localhost:3000/products
+```
+
+3. Get Product by ID:
+```cmd
+curl http://localhost:3000/products/{id}
+```
+
+4. Update Product:
+```cmd
+curl -X PATCH -H "Content-Type: application/json" -d "{\"price\":19.99,\"stockQuantity\":50}" http://localhost:3000/products/{id}
+```
+
+5. Get Price History:
+```cmd
+curl http://localhost:3000/products/{id}/price-history
+```
+
+6. Deactivate Product:
+```cmd
+curl -X DELETE http://localhost:3000/products/{id}
+```
+
+### Test Endpoints (Bash/Linux/Git Bash)
+
+1. Create Product:
+```bash
+curl -X POST http://localhost:3000/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test Product","price":9.99,"stockQuantity":100}'
+```
+
+2. Get All Products:
+```bash
+curl http://localhost:3000/products
+```
+
+## Testing
+
+The project includes end-to-end tests for all endpoints. To run tests:
+
+```bash
+# Make sure containers are running
+docker-compose up -d
+
+# Run e2e tests
+docker-compose exec api npm run test:e2e
+```
+
+## Project Structure
+
+- `src/modules/products/` - Product module implementation
+- `src/config/` - Configuration files including database setup
+- `test/` - E2E test files
+- `init.sql` - Database initialization script
+
+## Database Configuration
+
+The project uses two databases:
+- Main database: `fox_shop`
+- Test database: `fox_shop_test`
+
+Both databases are automatically created and configured through the `init.sql` script when running Docker Compose.
+
+---
 
 
 <p align="center">
