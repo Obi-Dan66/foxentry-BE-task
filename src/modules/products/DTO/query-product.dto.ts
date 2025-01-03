@@ -1,4 +1,4 @@
-import { IsOptional, IsNumber, Min, IsString } from 'class-validator';
+import { IsOptional, IsNumber, Min, IsString, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -38,5 +38,6 @@ export class QueryProductDto {
   })
   @IsOptional()
   @Type(() => Boolean)
+  @IsBoolean()
   includeInactive?: boolean;
 }

@@ -13,8 +13,6 @@ services:
       - DB_PASSWORD=postgres
       - DB_NAME=fox_shop
       - NODE_ENV=production
-    networks:
-      - fox-shop-network
 
   postgres:
     image: postgres:16
@@ -24,12 +22,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=fox_shop
-      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - fox-shop-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -38,7 +32,3 @@ services:
 
 volumes:
   postgres_data:
-
-networks:
-  fox-shop-network:
-    driver: bridge 
